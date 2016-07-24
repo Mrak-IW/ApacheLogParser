@@ -13,13 +13,13 @@ namespace ApacheLogParser
 		{
 			Ip tmpIp = new Ip
 			{
-				IpAddr = new byte[] { 255, 255, 255, 255 },
+				IpAddr = 0xFFFFFFFF,
 				OwnerCompany = "Компания",
 			};
 
 			FileData tmpFileData = new FileData
 			{
-				FullName = "htt://server.com/directory/amazingFile.htm",
+				FullName = "/directory/amazingFile.htm",
 				PageTitle = "Охренительный файл",
 				Size = 100500,
 			};

@@ -17,63 +17,57 @@ namespace ApacheLogParserConsole
 			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
 			ApacheLogContext database = new ApacheLogContext();
 
-			var log = database.LogEntries;
-
-			foreach (var item in log)
+			int startIndex = 1, count = -1;
+			if (args.Length > 1)
 			{
-				Console.WriteLine(item.Date);
-				Console.WriteLine(item.File);
-				Console.WriteLine(item.File.PageTitle);
-				Console.WriteLine(item.IpAddress);
-				Console.WriteLine(item.QueryType);
-				Console.WriteLine(item.QueryResult);
+				int.TryParse(args[1], out startIndex);
+			}
+			if (args.Length > 2)
+			{
+				int.TryParse(args[2], out count);
 			}
 
-			if (args.Length == 1 && File.Exists(args[0]))
+			if (args.Length > 0 && File.Exists(args[0]))
 			{
 				Console.WriteLine("Файл существует");
 
 				StreamReader inputFile = new StreamReader(args[0]);
 				DateTime start = DateTime.Now;
-				int i = 0;
-				while (!inputFile.EndOfStream)
+				for (int i = 1; !inputFile.EndOfStream && (i < startIndex + count || count < 1); i++)
 				{
-					i++;
 					string teststr = inputFile.ReadLine();
+
+					if (i < startIndex)
+					{
+						continue;
+					}
+
 					ApacheLogEntry ale = null;
 					ale = ApacheLogEntry.TryParse(teststr);
 					if (ale != null)
 					{
-						//var testIp =
-						//	from ip in database.IpAddresses
-						//	where ip.IpAddr == ale.IpAddress.IpAddr
-						//	select ip;
-						bool match = false;
-						foreach (Ip ip in database.IpAddresses)
+						var ipMatches = from ip in database.IpAddresses
+										where ip.IpAddr == ale.IpAddress.IpAddr
+										select ip;
+						Ip ipFound = ipMatches.FirstOrDefault();
+						if (ipFound != null)
 						{
-							if (ip.Equals(ale.IpAddress))
-							{
-								match = true;
-								ale.IpAddress = ip;
-								break;
-							}
+							ale.IpAddress = ipFound;
 						}
-						if (!match)
+						else
 						{
 							database.IpAddresses.Add(ale.IpAddress);
 						}
 
-						match = false;
-						foreach (FileData file in database.Files)
+						var fileMatches = from f in database.Files
+										  where f.FullName == ale.File.FullName
+										  select f;
+						FileData fileFound = fileMatches.FirstOrDefault();
+						if (fileFound != null)
 						{
-							if (file.Equals(ale.File))
-							{
-								match = true;
-								ale.File = file;
-								break;
-							}
+							ale.File = fileFound;
 						}
-						if (!match)
+						else
 						{
 							database.Files.Add(ale.File);
 						}

@@ -13,8 +13,10 @@ namespace ApacheLogParser
 	{
 		public int Id { get; set; }
 		public string FullName { get; set; }
+		[MaxLength(256)]
 		public string PageTitle { get; set; }
 		public int Size { get; set; }
+		[MaxLength(32)]
 		public string FileType { get; set; }
 
 		private static Regex parsePattern;

@@ -9,36 +9,48 @@ namespace ApacheLogParser
 {
 	public class Ip
 	{
+		public const int addrLength = 4;
+
 		public int Id { get; set; }
-		[MaxLength(6)]
-		public byte[] IpAddr { get; set; }
+		public long IpAddr { get; set; }
 		public string OwnerCompany { get; set; }
 
 		public virtual ICollection<ApacheLogEntry> ApacheLogEntries { get; set; }
 
 		public override string ToString()
 		{
-			return String.Join(".", IpAddr);
+			long buf = this.IpAddr;
+			byte[] bytes = new byte[addrLength];
+			for (int i = 0; i < addrLength; i++)
+			{
+				bytes[i] = (byte)((buf >> (addrLength - 1 - i) * 8) & 0xFF);
+			}
+			return String.Join(".", bytes);
 		}
 
 		public static Ip TryParse(string text)
 		{
 			Ip result = null;
 			bool fl = true;
-			string[] bytes = text.Split(new char[] { '.' });
-			if (bytes.Length == 4 || bytes.Length == 6)
+			string[] parts = text.Split(new char[] { '.' });
+			if (parts.Length == addrLength)
 			{
-				byte[] buf = new byte[bytes.Length];
-				for (int i = 0; i < buf.Length; i++)
+				byte[] bytes = new byte[parts.Length];
+				for (int i = 0; i < bytes.Length; i++)
 				{
-					fl &= byte.TryParse(bytes[i], out buf[i]);
+					fl &= byte.TryParse(parts[i], out bytes[i]);
 				}
 
 				if (fl)
 				{
+					long ip = 0;
+					for (int i = 0; i < bytes.Length; i++)
+					{
+						ip |= (long)bytes[i] << (bytes.Length - 1 - i) * 8;
+					}
 					result = new Ip
 					{
-						IpAddr = buf,
+						IpAddr = ip,
 					};
 				}
 			}
@@ -51,30 +63,17 @@ namespace ApacheLogParser
 			Ip ip = obj as Ip;
 
 			if (obj == null ||
-				ip == null ||
-				ip.IpAddr.Length != this.IpAddr.Length)
+				ip == null)
 			{
 				return false;
 			}
 
-			bool fl = true;
-
-			for (int i = 0; i < ip.IpAddr.Length; i++)
-			{
-				fl &= this.IpAddr[i] == ip.IpAddr[i];
-			}
-
-			return fl;
+			return this.IpAddr == ip.IpAddr;
 		}
 
 		public override int GetHashCode()
 		{
-			ulong sum = 0;
-			for (int i = 0; i < this.IpAddr.Length; i++)
-			{
-				sum |= ((ulong)this.IpAddr[i]) << i * 8;
-			}
-			return sum.GetHashCode();
+			return this.IpAddr.GetHashCode();
 		}
 	}
 }

@@ -21,6 +21,7 @@ namespace UnitTestApacheLogParser
 				961,
 				963,
 				1371,
+				2402,
 			};
 			string path = AppDomain.CurrentDomain.BaseDirectory;
 			string filename = "tariscope.com.access.log";
