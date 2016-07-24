@@ -34,9 +34,11 @@ namespace ApacheLogParserConsole
 				Console.WriteLine("Файл существует");
 
 				StreamReader inputFile = new StreamReader(args[0]);
+				DateTime start = DateTime.Now;
 				int i = 0;
-				while (!inputFile.EndOfStream && i++ < 2000)
+				while (!inputFile.EndOfStream)
 				{
+					i++;
 					string teststr = inputFile.ReadLine();
 					ApacheLogEntry ale = null;
 					ale = ApacheLogEntry.TryParse(teststr);
@@ -81,8 +83,10 @@ namespace ApacheLogParserConsole
 
 						if (i % 100 == 0)
 						{
-
-							Console.WriteLine("Обработано {0} строк", i);
+							DateTime end = DateTime.Now;
+							TimeSpan diff = end - start;
+							start = end;
+							Console.WriteLine("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4"));
 						}
 					}
 					else
