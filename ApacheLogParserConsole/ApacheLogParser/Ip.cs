@@ -45,5 +45,36 @@ namespace ApacheLogParser
 
 			return result;
 		}
+
+		public override bool Equals(object obj)
+		{
+			Ip ip = obj as Ip;
+
+			if (obj == null ||
+				ip == null ||
+				ip.IpAddr.Length != this.IpAddr.Length)
+			{
+				return false;
+			}
+
+			bool fl = true;
+
+			for (int i = 0; i < ip.IpAddr.Length; i++)
+			{
+				fl &= this.IpAddr[i] == ip.IpAddr[i];
+			}
+
+			return fl;
+		}
+
+		public override int GetHashCode()
+		{
+			ulong sum = 0;
+			for (int i = 0; i < this.IpAddr.Length; i++)
+			{
+				sum |= ((ulong)this.IpAddr[i]) << i * 8;
+			}
+			return sum.GetHashCode();
+		}
 	}
 }

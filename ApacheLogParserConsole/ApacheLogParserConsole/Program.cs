@@ -15,9 +15,6 @@ namespace ApacheLogParserConsole
 		static void Main(string[] args)
 		{
 			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
-
-			
-
 			ApacheLogContext database = new ApacheLogContext();
 
 			var log = database.LogEntries;
@@ -32,29 +29,67 @@ namespace ApacheLogParserConsole
 				Console.WriteLine(item.QueryResult);
 			}
 
-
 			if (args.Length == 1 && File.Exists(args[0]))
 			{
 				Console.WriteLine("Файл существует");
 
 				StreamReader inputFile = new StreamReader(args[0]);
 				int i = 0;
-				while (!inputFile.EndOfStream && i++ < 10)
+				while (!inputFile.EndOfStream && i++ < 2000)
 				{
 					string teststr = inputFile.ReadLine();
-					ApacheLogEntry ale = ApacheLogEntry.TryParse(teststr);
+					ApacheLogEntry ale = null;
+					ale = ApacheLogEntry.TryParse(teststr);
 					if (ale != null)
 					{
-						//var testIp = 
+						//var testIp =
 						//	from ip in database.IpAddresses
-						//	where ip.IpAddr
-						database.IpAddresses.Add(ale.IpAddress);
-						database.Files.Add(ale.File);
+						//	where ip.IpAddr == ale.IpAddress.IpAddr
+						//	select ip;
+						bool match = false;
+						foreach (Ip ip in database.IpAddresses)
+						{
+							if (ip.Equals(ale.IpAddress))
+							{
+								match = true;
+								ale.IpAddress = ip;
+								break;
+							}
+						}
+						if (!match)
+						{
+							database.IpAddresses.Add(ale.IpAddress);
+						}
+
+						match = false;
+						foreach (FileData file in database.Files)
+						{
+							if (file.Equals(ale.File))
+							{
+								match = true;
+								ale.File = file;
+								break;
+							}
+						}
+						if (!match)
+						{
+							database.Files.Add(ale.File);
+						}
+
 						database.LogEntries.Add(ale);
 						database.SaveChanges();
+
+						if (i % 100 == 0)
+						{
+
+							Console.WriteLine("Обработано {0} строк", i);
+						}
+					}
+					else
+					{
+						Console.WriteLine("Ошибка в строке {0}", i);
 					}
 				}
-				
 			}
 			else
 			{

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApacheLogParser", "ApacheLo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApacheLogParserConsole", "ApacheLogParserConsole\ApacheLogParserConsole.csproj", "{ED314546-5DB0-420B-AC64-D813F76E2BBE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestApacheLogParser", "UnitTestApacheLogParser\UnitTestApacheLogParser.csproj", "{95490E32-E299-4BFC-AD41-8E20DDA94102}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{ED314546-5DB0-420B-AC64-D813F76E2BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED314546-5DB0-420B-AC64-D813F76E2BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED314546-5DB0-420B-AC64-D813F76E2BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95490E32-E299-4BFC-AD41-8E20DDA94102}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95490E32-E299-4BFC-AD41-8E20DDA94102}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95490E32-E299-4BFC-AD41-8E20DDA94102}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95490E32-E299-4BFC-AD41-8E20DDA94102}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

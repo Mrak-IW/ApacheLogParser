@@ -23,6 +23,7 @@ namespace ApacheLogParser
 			//	.Property(fd => fd.FullName).HasColumnAnnotation(IndexAnnotation.AnnotationName,
 			//		new IndexAnnotation(
 			//		new IndexAttribute("IX_UniqueFileName") { IsUnique = true }));
+
 			//Шаманство для UNIQUE на столбце IP-адреса
 			//modelBuilder.Entity<Ip>()
 			//	.Property(ip => ip.IpAddr).HasColumnAnnotation(IndexAnnotation.AnnotationName,

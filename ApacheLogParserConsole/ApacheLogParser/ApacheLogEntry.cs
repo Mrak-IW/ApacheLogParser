@@ -23,6 +23,9 @@ namespace ApacheLogParser
 		public int? IpAddressId { get; set; }
 		public virtual Ip IpAddress { get; set; }
 
+		private static Regex parsePattern;
+		private static Regex transformPattern;
+
 		static ApacheLogEntry()
 		{
 			CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
@@ -32,12 +35,8 @@ namespace ApacheLogParser
 			{
 				monthNumber.Add(date.AddMonths(i).ToString("MMM", culture), i + 1);
 			}
-		}
 
-		public static ApacheLogEntry TryParse(string text)
-		{
-			ApacheLogEntry result = null;
-			Regex pattern = new Regex(String.Concat(
+			parsePattern = new Regex(String.Concat(
 				@"^\s*",                        //Начало строки с возможными пробелами
 				@"((?:\d{1,3}\.){3}\d{1,3})",   //IP-адрес (1)
 				@"[\s-]+",                      //Разделитель
@@ -53,15 +52,28 @@ namespace ApacheLogParser
 				@"\s+",                         //Пробелы
 				@"(\d+)",                       //Размер данных (6)
 				".*$"                           //Всё оставшееся
-				));
+				), RegexOptions.Compiled);
+
+			transformPattern = new Regex(String.Concat(
+					@"(\d+).",          //Число (1)
+					@"([A-Za-z]+).",    //Месяц (2)
+					@"(\d{2,}).",       //Год (3)
+					@"(\d+).",          //Часы (4)
+					@"(\d+).",          //Минуты (5)
+					@"(\d+).",          //Секунды (6)
+					@"(\S+)"            //Поправка к UTC (7)
+				), RegexOptions.Compiled);
+		}
+
+		public static ApacheLogEntry TryParse(string text)
+		{
+			ApacheLogEntry result = null;
+			Regex pattern = ApacheLogEntry.parsePattern;
 			Match match = pattern.Match(text);
 			GroupCollection groups = match.Groups;
 
 			if (match.Success)
 			{
-				CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
-				DateTimeStyles styles = DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeLocal;
-
 				DateTime dt = DateTime.MinValue;
 				int dataSize;
 				ushort retCode;
@@ -103,15 +115,7 @@ namespace ApacheLogParser
 		private static string ApacheLogDateToParsable(string dateText)
 		{
 			string result = null;
-			Regex pattern = new Regex(String.Concat(
-					@"(\d+).",          //Число (1)
-					@"([A-Za-z]+).",    //Месяц (2)
-					@"(\d{2,}).",       //Год (3)
-					@"(\d+).",          //Часы (4)
-					@"(\d+).",          //Минуты (5)
-					@"(\d+).",          //Секунды (6)
-					@"(\S+)"            //Поправка к UTC (7)
-				));
+			Regex pattern = transformPattern;
 			Match match = pattern.Match(dateText);
 			GroupCollection groups = match.Groups;
 			if (match.Success)
