@@ -19,8 +19,7 @@ namespace ApacheLogParser
 
 			FileData tmpFileData = new FileData
 			{
-				Name = "amazingFile.htm",
-				Path = "htt://server.com/directory/",
+				FullName = "htt://server.com/directory/amazingFile.htm",
 				PageTitle = "Охренительный файл",
 				Size = 100500,
 			};
@@ -30,7 +29,6 @@ namespace ApacheLogParser
 
 			ApacheLogEntry tmpEntry = new ApacheLogEntry
 			{
-				DataSize = 20,
 				Date = DateTime.Now,
 				QueryResult = 200,
 				QueryType = "GET",

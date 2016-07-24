@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 using ApacheLogParser;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ApacheLogParserConsole
 {
@@ -15,10 +16,7 @@ namespace ApacheLogParserConsole
 		{
 			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
 
-			if (args.Length == 1 && File.Exists(args[0]))
-			{
-				Console.WriteLine("Файл существует");
-			}
+			
 
 			ApacheLogContext database = new ApacheLogContext();
 
@@ -34,7 +32,34 @@ namespace ApacheLogParserConsole
 				Console.WriteLine(item.QueryResult);
 			}
 
-			database.SaveChanges();
+
+			if (args.Length == 1 && File.Exists(args[0]))
+			{
+				Console.WriteLine("Файл существует");
+
+				StreamReader inputFile = new StreamReader(args[0]);
+				int i = 0;
+				while (!inputFile.EndOfStream && i++ < 10)
+				{
+					string teststr = inputFile.ReadLine();
+					ApacheLogEntry ale = ApacheLogEntry.TryParse(teststr);
+					if (ale != null)
+					{
+						//var testIp = 
+						//	from ip in database.IpAddresses
+						//	where ip.IpAddr
+						database.IpAddresses.Add(ale.IpAddress);
+						database.Files.Add(ale.File);
+						database.LogEntries.Add(ale);
+						database.SaveChanges();
+					}
+				}
+				
+			}
+			else
+			{
+				Console.WriteLine("Файла не существует");
+			}
 		}
 	}
 }
