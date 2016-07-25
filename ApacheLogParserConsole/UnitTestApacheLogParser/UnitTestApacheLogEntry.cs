@@ -12,6 +12,7 @@ namespace UnitTestApacheLogParser
 		[TestMethod]
 		public void ApacheLogEntry_TryParse()
 		{
+			//Список строк из файла, которые необходимо прогнать через парсер
 			int[] logStringNumbers = new int[] {
 				1,
 				2,
@@ -22,11 +23,12 @@ namespace UnitTestApacheLogParser
 				963,
 				1371,
 				2402,
+				//6519,	//Вот эту строку как понимать вообще?
 			};
 			string path = AppDomain.CurrentDomain.BaseDirectory;
 			string filename = "tariscope.com.access.log";
 			string fullname = String.Format("{0}/{1}", path, filename);
-			Assert.IsTrue(File.Exists(fullname), "Файл с логом не существует в рабочей папке теста");
+			Assert.IsTrue(File.Exists(fullname), String.Format("Файл с логом не существует в рабочей папке теста [{0}]", fullname));
 
 			StreamReader logfile = new StreamReader(fullname);
 			for (int i = 1; i <= logStringNumbers.Max(); i++)
