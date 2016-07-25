@@ -15,7 +15,7 @@ namespace ApacheLogParser
 		public int Id { get; set; }
 		public DateTime Date { get; set; }
 		public string QueryType { get; set; }
-		public ushort QueryResult { get; set; }
+		public short QueryResult { get; set; }
 
 		public int? FileId { get; set; }
 		public virtual FileData File { get; set; }
@@ -76,7 +76,7 @@ namespace ApacheLogParser
 			{
 				DateTime dt = DateTime.MinValue;
 				int dataSize;
-				ushort retCode;
+				short retCode;
 				Ip ip = Ip.TryParse(groups[1].Value);
 				FileData fd = FileData.TryParse(groups[4].Value);
 
@@ -84,7 +84,7 @@ namespace ApacheLogParser
 
 				string date = ApacheLogDateToParsable(groups[2].Value);
 				fl &= DateTime.TryParse(date, out dt);
-				fl &= ushort.TryParse(groups[5].Value, out retCode);
+				fl &= short.TryParse(groups[5].Value, out retCode);
 				fl &= int.TryParse(groups[6].Value, out dataSize);
 
 				if (fl)
@@ -128,6 +128,31 @@ namespace ApacheLogParser
 					);
 			}
 			return result;
+		}
+
+		public override int GetHashCode()
+		{
+			int result = 0;
+
+			result ^= this.Date.GetHashCode();
+			result ^= this.File.GetHashCode();
+			result ^= this.IpAddress.GetHashCode();
+			result ^= this.QueryResult.GetHashCode();
+			result ^= this.QueryType.GetHashCode();
+
+			return result;
+		}
+
+		public override bool Equals(object obj)
+		{
+			ApacheLogEntry entry = obj as ApacheLogEntry;
+
+			if (obj == null ||
+				entry == null)
+			{
+				return false;
+			}
+			return entry.GetHashCode() == this.GetHashCode();
 		}
 	}
 }

@@ -42,7 +42,12 @@ namespace ApacheLogParserConsole
 
 				StreamReader inputFile = new StreamReader(args[0]);
 				DateTime start = DateTime.Now;
-				for (int i = 1; !inputFile.EndOfStream && (i < startIndex + count || count < 1); i++)
+				int added = 0;
+				int skipped = 0;
+				int duplicateFound = 0;
+				int errorFound = 0;
+				int i;
+				for (i = 1; !inputFile.EndOfStream && (i < startIndex + count || count < 1); i++)
 				{
 					string teststr = inputFile.ReadLine();
 
@@ -59,34 +64,57 @@ namespace ApacheLogParserConsole
 						bool skip = ale.File.FileType != null && skipList.Contains(ale.File.FileType.ToLower());
 						if (!skip)
 						{
-							var ipMatches = from ip in database.IpAddresses
-											where ip.IpAddr == ale.IpAddress.IpAddr
-											select ip;
-							Ip ipFound = ipMatches.FirstOrDefault();
-							if (ipFound != null)
+							var entryMatches = from e in database.LogEntries
+											   where e.Date.Equals(ale.Date)
+											   select e;
+
+							ApacheLogEntry entryFound = null;
+							foreach (ApacheLogEntry e in entryMatches)
 							{
-								ale.IpAddress = ipFound;
+								if (e.Equals(ale))
+								{
+									entryFound = e;
+									break;
+								}
+							}
+
+							if (entryFound == null)
+							{
+
+								var ipMatches = from ip in database.IpAddresses
+												where ip.IpAddr == ale.IpAddress.IpAddr
+												select ip;
+								Ip ipFound = ipMatches.FirstOrDefault();
+								if (ipFound != null)
+								{
+									ale.IpAddress = ipFound;
+								}
+								else
+								{
+									database.IpAddresses.Add(ale.IpAddress);
+								}
+
+								var fileMatches = from f in database.Files
+												  where f.FullName == ale.File.FullName
+												  select f;
+								FileData fileFound = fileMatches.FirstOrDefault();
+								if (fileFound != null)
+								{
+									ale.File = fileFound;
+								}
+								else
+								{
+									database.Files.Add(ale.File);
+								}
+
+								database.LogEntries.Add(ale);
+								database.SaveChanges();
+								added++;
 							}
 							else
 							{
-								database.IpAddresses.Add(ale.IpAddress);
+								duplicateFound++;
 							}
-
-							var fileMatches = from f in database.Files
-											  where f.FullName == ale.File.FullName
-											  select f;
-							FileData fileFound = fileMatches.FirstOrDefault();
-							if (fileFound != null)
-							{
-								ale.File = fileFound;
-							}
-							else
-							{
-								database.Files.Add(ale.File);
-							}
-
-							database.LogEntries.Add(ale);
-							database.SaveChanges();
 
 							if (i % 100 == 0)
 							{
@@ -96,13 +124,24 @@ namespace ApacheLogParserConsole
 								Console.WriteLine("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4"));
 							}
 						}
+						else
+						{
+							skipped++;
+						}
 					}
 					else
 					{
 						Console.WriteLine("Ошибка в строке {0}", i);
+						errorFound++;
 					}
-
 				}
+
+				Console.WriteLine("");
+				Console.WriteLine("Обработано {0} строк", i - 1);
+				Console.WriteLine("Отфильтровано по типу файла {0} строк", skipped);
+				Console.WriteLine("Отброшено из-за ошибки парсинга {0} строк", errorFound);
+				Console.WriteLine("Отброшено для предотвращения дублирования {0} строк", duplicateFound);
+				Console.WriteLine("Добавлено в базу {0} строк", added);
 			}
 			else
 			{

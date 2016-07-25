@@ -73,12 +73,12 @@ namespace ApacheLogParser
 				return false;
 			}
 
-			return this.FullName == file.FullName;
+			return this.GetHashCode() == file.GetHashCode();
 		}
 
 		public override int GetHashCode()
 		{
-			return this.FullName.GetHashCode();
+			return this.FullName.GetHashCode() ^ this.Size.GetHashCode();
 		}
 	}
 }
