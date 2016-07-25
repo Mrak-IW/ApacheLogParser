@@ -14,6 +14,15 @@ namespace ApacheLogParserConsole
 	{
 		static void Main(string[] args)
 		{
+			string[] skipList = new string[] {
+				"jpg",
+				"jpeg",
+				"png",
+				"bmp",
+				"gif",
+				"js",
+				"css",
+			};
 			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
 			ApacheLogContext database = new ApacheLogContext();
 
@@ -44,49 +53,55 @@ namespace ApacheLogParserConsole
 
 					ApacheLogEntry ale = null;
 					ale = ApacheLogEntry.TryParse(teststr);
+
 					if (ale != null)
 					{
-						var ipMatches = from ip in database.IpAddresses
-										where ip.IpAddr == ale.IpAddress.IpAddr
-										select ip;
-						Ip ipFound = ipMatches.FirstOrDefault();
-						if (ipFound != null)
+						bool skip = ale.File.FileType != null && skipList.Contains(ale.File.FileType.ToLower());
+						if (!skip)
 						{
-							ale.IpAddress = ipFound;
-						}
-						else
-						{
-							database.IpAddresses.Add(ale.IpAddress);
-						}
+							var ipMatches = from ip in database.IpAddresses
+											where ip.IpAddr == ale.IpAddress.IpAddr
+											select ip;
+							Ip ipFound = ipMatches.FirstOrDefault();
+							if (ipFound != null)
+							{
+								ale.IpAddress = ipFound;
+							}
+							else
+							{
+								database.IpAddresses.Add(ale.IpAddress);
+							}
 
-						var fileMatches = from f in database.Files
-										  where f.FullName == ale.File.FullName
-										  select f;
-						FileData fileFound = fileMatches.FirstOrDefault();
-						if (fileFound != null)
-						{
-							ale.File = fileFound;
-						}
-						else
-						{
-							database.Files.Add(ale.File);
-						}
+							var fileMatches = from f in database.Files
+											  where f.FullName == ale.File.FullName
+											  select f;
+							FileData fileFound = fileMatches.FirstOrDefault();
+							if (fileFound != null)
+							{
+								ale.File = fileFound;
+							}
+							else
+							{
+								database.Files.Add(ale.File);
+							}
 
-						database.LogEntries.Add(ale);
-						database.SaveChanges();
+							database.LogEntries.Add(ale);
+							database.SaveChanges();
 
-						if (i % 100 == 0)
-						{
-							DateTime end = DateTime.Now;
-							TimeSpan diff = end - start;
-							start = end;
-							Console.WriteLine("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4"));
+							if (i % 100 == 0)
+							{
+								DateTime end = DateTime.Now;
+								TimeSpan diff = end - start;
+								start = end;
+								Console.WriteLine("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4"));
+							}
 						}
 					}
 					else
 					{
 						Console.WriteLine("Ошибка в строке {0}", i);
 					}
+
 				}
 			}
 			else

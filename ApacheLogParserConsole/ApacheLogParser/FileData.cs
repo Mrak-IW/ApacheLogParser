@@ -26,14 +26,12 @@ namespace ApacheLogParser
 		static FileData()
 		{
 			parsePattern = new Regex(String.Concat(
-				"^",
-				"(",
-				@"/(?:\S+/)*",                      //Путь к файлу (1)
-				"([^\\s:\")(]+(?:\\.([a-z]+))?)?",  //Имя файла (2) и его расширение (3)
-				")",
-				@"(\?.*)?",                         //GET-параметры запроса
-				"$"
-				), RegexOptions.Compiled);
+				@"^",
+				@"(.*",							//Полное имя файла (1)
+				@"(?:\.(\w+))?)",				//Расширение файла (2)
+				@"((?:&|\?)(?:[\w\.%]+=+[^\s&?]*|[\w&]+))*",	//GET-параметры запроса (3)
+				@"$"
+				), RegexOptions.Compiled | RegexOptions.RightToLeft);
 		}
 
 		public override string ToString()
@@ -56,9 +54,9 @@ namespace ApacheLogParser
 					FullName = groups[1].Value,
 				};
 
-				if (groups.Count > 3)
+				if (groups.Count > 2)
 				{
-					result.FileType = groups[3].Value;
+					result.FileType = groups[2].Value == "" ? null : groups[2].Value;
 				}
 			}
 
