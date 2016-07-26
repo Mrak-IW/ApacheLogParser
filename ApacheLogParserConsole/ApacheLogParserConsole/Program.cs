@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using System.IO;
 
 using ApacheLogParser;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ApacheLogParserConsole
 {
 	class Program
 	{
+		static Program()
+		{
+			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
+		}
+
 		static void Main(string[] args)
 		{
 			string[] skipList = new string[] {
@@ -23,10 +27,9 @@ namespace ApacheLogParserConsole
 				"js",
 				"css",
 			};
-			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
+			
 			using (ApacheLogContext database = new ApacheLogContext())
 			{
-
 				int startIndex = 1, count = -1;
 				if (args.Length > 1)
 				{

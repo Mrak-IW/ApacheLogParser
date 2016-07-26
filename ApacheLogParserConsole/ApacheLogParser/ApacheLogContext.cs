@@ -38,7 +38,7 @@ namespace ApacheLogParser
 					new IndexAttribute("IX_UniqueIp") { IsUnique = true }));
 		}
 
-		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage callback = null)
+		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage writeLogCallback = null)
 		{
 			if (skipList == null)
 			{
@@ -129,7 +129,7 @@ namespace ApacheLogParser
 							DateTime end = DateTime.Now;
 							TimeSpan diff = end - start;
 							start = end;
-							callback?.Invoke(String.Format("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4")));
+							writeLogCallback?.Invoke(String.Format("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4")));
 						}
 					}
 					else
@@ -139,18 +139,18 @@ namespace ApacheLogParser
 				}
 				else
 				{
-					callback?.Invoke(String.Format("Ошибка в строке {0}", i));
+					writeLogCallback?.Invoke(String.Format("Ошибка в строке {0}", i));
 					errorFound++;
 				}
 			}
 
-			if (callback != null)
+			if (writeLogCallback != null)
 			{
-				callback(String.Format("Обработано {0} строк", i - 1));
-				callback(String.Format("Отфильтровано по типу файла {0} строк", skipped));
-				callback(String.Format("Отброшено из-за ошибки парсинга {0} строк", errorFound));
-				callback(String.Format("Отброшено для предотвращения дублирования {0} строк", duplicateFound));
-				callback(String.Format("Добавлено в базу {0} строк", added));
+				writeLogCallback(String.Format("Обработано {0} строк", i - 1));
+				writeLogCallback(String.Format("Отфильтровано по типу файла {0} строк", skipped));
+				writeLogCallback(String.Format("Отброшено из-за ошибки парсинга {0} строк", errorFound));
+				writeLogCallback(String.Format("Отброшено для предотвращения дублирования {0} строк", duplicateFound));
+				writeLogCallback(String.Format("Добавлено в базу {0} строк", added));
 			}
 		}
 	}
