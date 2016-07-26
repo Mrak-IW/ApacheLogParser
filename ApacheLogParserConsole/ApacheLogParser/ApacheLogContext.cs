@@ -23,6 +23,9 @@ namespace ApacheLogParser
 			Database.SetInitializer<ApacheLogContext>(new ApacheLogContextInitializer());
 		}
 
+		public ApacheLogContext() { }
+		public ApacheLogContext(string nameOrConnectionString) : base(nameOrConnectionString) { }
+
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
 		{
 			////Шаманство для UNIQUE на столбце имени файла
