@@ -20,6 +20,8 @@ namespace ApacheLogParser
 		public int? FileId { get; set; }
 		public virtual FileData File { get; set; }
 
+		public int DataSize { get; set; }
+
 		public int? IpAddressId { get; set; }
 		public virtual Ip IpAddress { get; set; }
 
@@ -89,7 +91,6 @@ namespace ApacheLogParser
 
 				if (fl)
 				{
-					fd.Size = dataSize;
 					result = new ApacheLogEntry
 					{
 						IpAddress = ip,
@@ -97,6 +98,7 @@ namespace ApacheLogParser
 						QueryType = groups[3].Value,
 						File = fd,
 						QueryResult = retCode,
+						DataSize = dataSize,
 					};
 				}
 			}

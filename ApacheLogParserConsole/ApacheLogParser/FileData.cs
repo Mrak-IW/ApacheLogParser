@@ -15,7 +15,6 @@ namespace ApacheLogParser
 		public string FullName { get; set; }
 		[MaxLength(256)]
 		public string PageTitle { get; set; }
-		public int Size { get; set; }
 		[MaxLength(32)]
 		public string FileType { get; set; }
 
@@ -78,7 +77,7 @@ namespace ApacheLogParser
 
 		public override int GetHashCode()
 		{
-			return this.FullName.GetHashCode() ^ this.Size.GetHashCode();
+			return this.FullName.ToLower().GetHashCode();
 		}
 	}
 }

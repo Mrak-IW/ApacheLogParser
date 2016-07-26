@@ -24,11 +24,11 @@ namespace ApacheLogParser
 			//		new IndexAnnotation(
 			//		new IndexAttribute("IX_UniqueFileName") { IsUnique = true }));
 
-			////Шаманство для UNIQUE на столбце IP-адреса
-			//modelBuilder.Entity<Ip>()
-			//	.Property(ip => ip.IpAddr).HasColumnAnnotation(IndexAnnotation.AnnotationName,
-			//		new IndexAnnotation(
-			//		new IndexAttribute("IX_UniqueIp") { IsUnique = true }));
+			//Шаманство для UNIQUE на столбце IP-адреса
+			modelBuilder.Entity<Ip>()
+				.Property(ip => ip.IpAddr).HasColumnAnnotation(IndexAnnotation.AnnotationName,
+					new IndexAnnotation(
+					new IndexAttribute("IX_UniqueIp") { IsUnique = true }));
 		}
 
 		public DbSet<ApacheLogEntry> LogEntries { get; set; }
