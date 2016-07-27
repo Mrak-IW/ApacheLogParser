@@ -52,7 +52,7 @@ namespace ApacheLogParserWF
 							Query = str.QueryType,
 							Response = str.QueryResult,
 							FileType = str.File.FileType,
-							File = str.File.FullName,
+							File = string.Concat(TB_ServerAddress.Text, str.File.FullName),
 							Size = str.DataSize,
 						};
 			switch (date)
@@ -150,8 +150,8 @@ namespace ApacheLogParserWF
 					logFileName = OFD_OpenLog.FileName,
 					database = ctx,
 					skipList = skipList,
-					startIndex = 1,
-					count = 200,
+					startIndex = (int)NUD_StartIndex.Value,
+					count = (int)NUD_Count.Value,
 					writeLogCallback = this.WriteLog,
 					finishAction = this.RefreshDbView,
 				};
@@ -214,7 +214,7 @@ namespace ApacheLogParserWF
 		{
 			if (timeToRefresh)
 			{
-				DGV_DataBase.DataSource = ctx.LogEntries.ToList();
+				DGV_DataBase.DataSource = GetSortedData();
 				timeToRefresh = false;
 			}
 		}
