@@ -22,7 +22,6 @@ namespace ApacheLogParser
 	{
 		protected override void Seed(ApacheLogContext context)
 		{
-			Console.WriteLine("Инициализируется БД");
 			//Ip tmpIp = new Ip
 			//{
 			//	IpAddr = 0xFFFFFFFF,

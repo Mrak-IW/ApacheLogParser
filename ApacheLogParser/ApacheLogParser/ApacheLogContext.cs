@@ -41,7 +41,23 @@ namespace ApacheLogParser
 					new IndexAttribute("IX_UniqueIp") { IsUnique = true }));
 		}
 
-		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage writeLogCallback = null)
+		public void ParseLog(string filename, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage writeLogCallback = null, SimpleCallback finishAction = null)
+		{
+			FileInfo fi = new FileInfo(filename);
+			if (fi.Exists)
+			{
+				using (FileStream fs = fi.OpenRead())
+				{
+					ParseLog(fs, skipList, startIndex, count, writeLogCallback, finishAction);
+				}
+			}
+			else
+			{
+				writeLogCallback?.Invoke(String.Format("Не удалось открыть файл {0}", filename));
+			}
+		}
+
+		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage writeLogCallback = null, SimpleCallback finishAction = null)
 		{
 			if (skipList == null)
 			{
@@ -152,6 +168,8 @@ namespace ApacheLogParser
 				writeLogCallback(String.Format("Отброшено для предотвращения дублирования {0} строк", duplicateFound));
 				writeLogCallback(String.Format("Добавлено в базу {0} строк", added));
 			}
+
+			finishAction?.Invoke();
 		}
 	}
 }

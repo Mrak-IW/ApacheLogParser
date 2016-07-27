@@ -52,6 +52,7 @@
     <Compile Include="ApacheLogContext.cs" />
     <Compile Include="ApacheLogContextInitializer.cs" />
     <Compile Include="ApacheLogEntry.cs" />
+    <Compile Include="Delegates\SimpleCallback.cs" />
     <Compile Include="FileData.cs" />
     <Compile Include="Ip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
