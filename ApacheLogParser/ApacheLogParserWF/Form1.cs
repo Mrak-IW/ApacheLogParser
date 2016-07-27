@@ -31,7 +31,94 @@ namespace ApacheLogParserWF
 		public void RefreshDbView()
 		{
 			timeToRefresh = true;
-			WriteLog("Необходимо обновить таблицу\n");
+			WriteLog("Разбор файла завершён\r\n");
+		}
+
+		public object GetSortedData(
+			SortType date = SortType.NONE,
+			SortType ip = SortType.NONE,
+			SortType queryType = SortType.NONE,
+			SortType responseCode = SortType.NONE,
+			SortType fileType = SortType.NONE,
+			SortType fileName = SortType.NONE,
+			SortType fileSize = SortType.NONE
+			)
+		{
+			var query = from str in ctx.LogEntries
+						select new
+						{
+							Date = str.Date,
+							Ip = str.IpAddress,
+							Query = str.QueryType,
+							Response = str.QueryResult,
+							FileType = str.File.FileType,
+							File = str.File.FullName,
+							Size = str.DataSize,
+						};
+			switch (date)
+			{
+				case SortType.Ascending:
+					query = query.OrderBy(e => e.Date);
+					break;
+				case SortType.Descending:
+					query = query.OrderByDescending(e => e.Date);
+					break;
+			}
+			switch (ip)
+			{
+				case SortType.Ascending:
+					query = query.OrderBy(e => e.Ip);
+					break;
+				case SortType.Descending:
+					query = query.OrderByDescending(e => e.Ip);
+					break;
+			}
+			switch (queryType)
+			{
+				case SortType.Ascending:
+					query = query.OrderBy(e => e.Query);
+					break;
+				case SortType.Descending:
+					query = query.OrderByDescending(e => e.Query);
+					break;
+			}
+			switch (fileType)
+			{
+				case SortType.Ascending:
+					query = query.OrderBy(e => e.FileType);
+					break;
+				case SortType.Descending:
+					query = query.OrderByDescending(e => e.FileType);
+					break;
+			}
+			switch (fileName)
+			{
+				case SortType.Ascending:
+					query = query.OrderBy(e => e.File);
+					break;
+				case SortType.Descending:
+					query = query.OrderByDescending(e => e.File);
+					break;
+			}
+			switch (fileSize)
+			{
+				case SortType.Ascending:
+					query = query.OrderBy(e => e.Size);
+					break;
+				case SortType.Descending:
+					query = query.OrderByDescending(e => e.Size);
+					break;
+			}
+			switch (responseCode)
+			{
+				case SortType.Ascending:
+					query = query.OrderBy(e => e.Response);
+					break;
+				case SortType.Descending:
+					query = query.OrderByDescending(e => e.Response);
+					break;
+			}
+			return query.ToList();
 		}
 
 		public Form1()
@@ -39,7 +126,7 @@ namespace ApacheLogParserWF
 			InitializeComponent();
 			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
 			ctx = new ApacheLogContext();
-			DGV_DataBase.DataSource = ctx.LogEntries.ToList();
+			DGV_DataBase.DataSource = GetSortedData();
 		}
 
 		private void MI_FileOpen_Click(object sender, EventArgs e)
@@ -58,7 +145,6 @@ namespace ApacheLogParserWF
 
 			if (ofd == DialogResult.OK || ofd == DialogResult.Yes)
 			{
-				//ctx.ParseLog(logfile, skipList, 1, 200, writeLogCallback: this.WriteLog);
 				StreamParser parser = new StreamParser
 				{
 					logFileName = OFD_OpenLog.FileName,
@@ -92,14 +178,33 @@ namespace ApacheLogParserWF
 			{
 				switch ((sender as ToolStripComboBox).SelectedIndex)
 				{
+					//< По умолчанию >
+					//Тип файла A->B
+					//Тип файла B->A
+					//Путь A->B
+					//Путь B->A
+					//Тип запроса A->B
+					//Код ответа A->B
 					case 0:
-						DGV_DataBase.DataSource = ctx.LogEntries.ToList();
+						DGV_DataBase.DataSource = GetSortedData();
 						break;
 					case 1:
-						DGV_DataBase.DataSource = ctx.LogEntries.OrderBy(elem => elem.File.FileType).ToList();
+						DGV_DataBase.DataSource = GetSortedData(fileType: SortType.Ascending);
 						break;
 					case 2:
-						DGV_DataBase.DataSource = ctx.LogEntries.OrderByDescending(elem => elem.File.FileType).ToList();
+						DGV_DataBase.DataSource = GetSortedData(fileType: SortType.Descending);
+						break;
+					case 3:
+						DGV_DataBase.DataSource = GetSortedData(fileName: SortType.Ascending);
+						break;
+					case 4:
+						DGV_DataBase.DataSource = GetSortedData(fileName: SortType.Descending);
+						break;
+					case 5:
+						DGV_DataBase.DataSource = GetSortedData(queryType: SortType.Ascending);
+						break;
+					case 6:
+						DGV_DataBase.DataSource = GetSortedData(responseCode: SortType.Ascending);
 						break;
 				}
 			}

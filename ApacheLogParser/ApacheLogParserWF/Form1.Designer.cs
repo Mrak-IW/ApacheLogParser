@@ -78,7 +78,11 @@
 			this.MI_CB_SortType.Items.AddRange(new object[] {
             "<По умолчанию>",
             "Тип файла A->B",
-            "Тип файла B->A"});
+            "Тип файла B->A",
+            "Путь A->B",
+            "Путь B->A",
+            "Тип запроса A->B",
+            "Код ответа A->B"});
 			this.MI_CB_SortType.Name = "MI_CB_SortType";
 			this.MI_CB_SortType.Size = new System.Drawing.Size(121, 23);
 			this.MI_CB_SortType.Text = "Сортировка";
