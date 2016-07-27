@@ -48,9 +48,6 @@ namespace ApacheLogParser
 				skipList = new string[0];
 			}
 
-			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
-			ApacheLogContext database = new ApacheLogContext();
-
 			StreamReader inputFile = new StreamReader(inputStream);
 			DateTime start = DateTime.Now;
 			int added = 0;
@@ -75,7 +72,7 @@ namespace ApacheLogParser
 					bool skip = ale.File.FileType != null && skipList.Contains(ale.File.FileType.ToLower());
 					if (!skip)
 					{
-						var entryMatches = from e in database.LogEntries
+						var entryMatches = from e in this.LogEntries
 										   where e.Date.Equals(ale.Date)
 										   select e;
 
@@ -92,7 +89,7 @@ namespace ApacheLogParser
 						if (entryFound == null)
 						{
 
-							var ipMatches = from ip in database.IpAddresses
+							var ipMatches = from ip in this.IpAddresses
 											where ip.IpAddr == ale.IpAddress.IpAddr
 											select ip;
 							Ip ipFound = ipMatches.FirstOrDefault();
@@ -102,10 +99,10 @@ namespace ApacheLogParser
 							}
 							else
 							{
-								database.IpAddresses.Add(ale.IpAddress);
+								this.IpAddresses.Add(ale.IpAddress);
 							}
 
-							var fileMatches = from f in database.Files
+							var fileMatches = from f in this.Files
 											  where f.FullName == ale.File.FullName
 											  select f;
 							FileData fileFound = fileMatches.FirstOrDefault();
@@ -115,11 +112,11 @@ namespace ApacheLogParser
 							}
 							else
 							{
-								database.Files.Add(ale.File);
+								this.Files.Add(ale.File);
 							}
 
-							database.LogEntries.Add(ale);
-							database.SaveChanges();
+							this.LogEntries.Add(ale);
+							this.SaveChanges();
 							added++;
 						}
 						else
