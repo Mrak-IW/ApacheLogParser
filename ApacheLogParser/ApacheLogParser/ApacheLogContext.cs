@@ -57,11 +57,24 @@ namespace ApacheLogParser
 			}
 		}
 
+		/// <summary>
+		/// Разбор лог-файла Apache
+		/// </summary>
+		/// <param name="inputStream">Текстовый поток, из которого читаем</param>
+		/// <param name="skipList">Список типов файлов, которые необходимо пропустить</param>
+		/// <param name="startIndex">Все записи, что были до этой, будут проигнорированы</param>
+		/// <param name="count">Максимальное количество записей, которое необходимо обработать</param>
+		/// <param name="writeLogCallback">Функция обратного вызова, которая будет записывать в лог произошедшие события</param>
+		/// <param name="finishAction">Функция обратного вызова, которая будет вызвана по завершении парсинга</param>
 		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage writeLogCallback = null, SimpleCallback finishAction = null)
 		{
 			if (skipList == null)
 			{
 				skipList = new string[0];
+			}
+			if (startIndex < 1)
+			{
+				startIndex = 1;
 			}
 
 			StreamReader inputFile = new StreamReader(inputStream);

@@ -57,6 +57,7 @@
     <Compile Include="Ip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Delegates\SendMessage.cs" />
+    <Compile Include="StreamParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

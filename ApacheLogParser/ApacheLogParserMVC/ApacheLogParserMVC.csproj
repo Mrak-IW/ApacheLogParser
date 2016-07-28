@@ -171,6 +171,7 @@
     <Content Include="Views\ApacheLog\Details.cshtml" />
     <Content Include="Views\ApacheLog\Edit.cshtml" />
     <Content Include="Views\ApacheLog\Index.cshtml" />
+    <Content Include="Views\ApacheLog\UploadFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

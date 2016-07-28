@@ -2,55 +2,65 @@
 
 @{
     ViewBag.Title = "Index";
+	HtmlString log = new HtmlString(ViewBag.Log);
 }
 
-<h2>Index</h2>
+<h2>Log Entries</h2>
 
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+<p>
+	@log
+</p>
 <table class="table">
     <tr>
+		<th>
+			@Html.DisplayNameFor(model => model.Date)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.IpAddress)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.IpAddress.OwnerCompany)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.QueryType)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.QueryResult)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.DataSize)
+		</th>
         <th>
             @Html.DisplayNameFor(model => model.File.FullName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IpAddress.OwnerCompany)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QueryType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.QueryResult)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DataSize)
         </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
+		<td>
+			@Html.DisplayFor(modelItem => item.Date)
+		</td>
+		<td>
+			@item.IpAddress
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.IpAddress.OwnerCompany)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.QueryType)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.QueryResult)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.DataSize)
+		</td>
         <td>
             @Html.DisplayFor(modelItem => item.File.FullName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IpAddress.OwnerCompany)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QueryType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.QueryResult)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DataSize)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
