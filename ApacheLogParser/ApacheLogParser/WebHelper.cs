@@ -14,31 +14,37 @@ namespace ApacheLogParser
 	{
 		public static string Whois(string ip, string whoisServer, int port)
 		{
-			throw new NotImplementedException("TODO: узнать, как подключаться к серверу whois");
-			//Возможно, у меня это не работает из-за прокси. Проверить. 
+			//Сервер whois.ripe.net выдаёт самую подробную инфу
+			//Предположительно, название организации-владельца находится в графе
+			//netname:        KHARKOV-MAXNET-N3 (к примеру)
 
 			string result = null;
 
 			string txtResponse = "";
 			string strResponse = "";
 
-			TcpClient tcpWhois = new TcpClient(whoisServer, port);
-			NetworkStream nsWhois = tcpWhois.GetStream();
-			BufferedStream bfWhois = new BufferedStream(nsWhois);
-
-			StreamWriter swSend = new StreamWriter(bfWhois);
-			swSend.WriteLine(ip);
-			swSend.Flush();
-
-			StreamReader srReceive = new StreamReader(bfWhois);
-
-			while ((strResponse = srReceive.ReadLine()) != null)
+			try
 			{
-				txtResponse += strResponse + "\r\n";
+				TcpClient tcpWhois = new TcpClient(whoisServer, port);
+				NetworkStream nsWhois = tcpWhois.GetStream();
+				BufferedStream bfWhois = new BufferedStream(nsWhois);
+
+				StreamWriter swSend = new StreamWriter(bfWhois);
+				swSend.WriteLine(ip);
+				swSend.Flush();
+
+				StreamReader srReceive = new StreamReader(bfWhois);
+
+				while ((strResponse = srReceive.ReadLine()) != null)
+				{
+					txtResponse += strResponse + "\r\n";
+				}
+
+				tcpWhois.Close();
+
+				result = txtResponse;
 			}
-
-			tcpWhois.Close();
-
+			catch { }
 			return result;
 		}
 
