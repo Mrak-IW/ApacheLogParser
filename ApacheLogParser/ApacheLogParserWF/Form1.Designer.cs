@@ -32,6 +32,7 @@
 			this.MNU_MainMenu = new System.Windows.Forms.MenuStrip();
 			this.MI_File = new System.Windows.Forms.ToolStripMenuItem();
 			this.MI_FileOpen = new System.Windows.Forms.ToolStripMenuItem();
+			this.MI_SortLabel = new System.Windows.Forms.ToolStripMenuItem();
 			this.MI_CB_SortType = new System.Windows.Forms.ToolStripComboBox();
 			this.OFD_OpenLog = new System.Windows.Forms.OpenFileDialog();
 			this.SPLIT_MainSplitContatiner = new System.Windows.Forms.SplitContainer();
@@ -45,7 +46,6 @@
 			this.TT_Helper = new System.Windows.Forms.ToolTip(this.components);
 			this.TB_ServerAddress = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
-			this.MI_SortLabel = new System.Windows.Forms.ToolStripMenuItem();
 			this.MNU_MainMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.SPLIT_MainSplitContatiner)).BeginInit();
 			this.SPLIT_MainSplitContatiner.Panel1.SuspendLayout();
@@ -83,6 +83,12 @@
 			this.MI_FileOpen.Size = new System.Drawing.Size(220, 22);
 			this.MI_FileOpen.Text = "Выбрать лог-файл";
 			this.MI_FileOpen.Click += new System.EventHandler(this.MI_FileOpen_Click);
+			// 
+			// MI_SortLabel
+			// 
+			this.MI_SortLabel.Name = "MI_SortLabel";
+			this.MI_SortLabel.Size = new System.Drawing.Size(91, 23);
+			this.MI_SortLabel.Text = "Сортировка :";
 			// 
 			// MI_CB_SortType
 			// 
@@ -214,6 +220,7 @@
 			this.TB_ServerAddress.Size = new System.Drawing.Size(100, 20);
 			this.TB_ServerAddress.TabIndex = 6;
 			this.TB_ServerAddress.Text = "http://www.tariscope.com";
+			this.TT_Helper.SetToolTip(this.TB_ServerAddress, "Если оставить поле пустым, запросы на заголовки страниц производиться не будут");
 			// 
 			// label3
 			// 
@@ -223,12 +230,6 @@
 			this.label3.Size = new System.Drawing.Size(83, 13);
 			this.label3.TabIndex = 7;
 			this.label3.Text = "Адрес сервера";
-			// 
-			// MI_SortLabel
-			// 
-			this.MI_SortLabel.Name = "MI_SortLabel";
-			this.MI_SortLabel.Size = new System.Drawing.Size(91, 23);
-			this.MI_SortLabel.Text = "Сортировка :";
 			// 
 			// Form1
 			// 

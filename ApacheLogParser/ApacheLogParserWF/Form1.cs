@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using ApacheLogParser;
 using System.IO;
 using System.Threading;
+using ApacheLogParser.Delegates;
 
 namespace ApacheLogParserWF
 {
@@ -139,6 +140,12 @@ namespace ApacheLogParserWF
 		{
 			ctx.CurrentServer = TB_ServerAddress.Text;
 
+			StringInStringOut getTitle = null;
+			if (TB_ServerAddress.Text.Length > 0)
+			{
+				getTitle = WebHelper.GetPageTitle;
+			}
+
 			string[] skipList = new string[] {
 				"jpg",
 				"jpeg",
@@ -162,7 +169,7 @@ namespace ApacheLogParserWF
 					count = (int)NUD_Count.Value,
 					writeLogCallback = this.WriteLog,
 					finishAction = this.RefreshDbView,
-					getPageTitle= WebHelper.GetPageTitle,
+					getPageTitle = getTitle,
 				};
 				Thread parseThread = new Thread(parser.Call);
 				parseThread.Start();
