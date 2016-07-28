@@ -27,6 +27,11 @@ namespace ApacheLogParserWF
 		{
 			InitializeComponent();
 			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
+			DirectoryInfo datadir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "/AppData");
+			if (!datadir.Exists)
+			{
+				datadir.Create();
+			}
 			ctx = new ApacheLogContext();
 			DGV_DataBase.DataSource = GetSortedData();
 			ctx.CurrentServer = "http://www.tariscope.com";
