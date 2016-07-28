@@ -34,7 +34,6 @@ namespace ApacheLogParserWF
 			}
 			ctx = new ApacheLogContext();
 			DGV_DataBase.DataSource = GetSortedData();
-			ctx.CurrentServer = "http://www.tariscope.com";
 		}
 
 		public void WriteLog(string line)
@@ -138,6 +137,8 @@ namespace ApacheLogParserWF
 
 		private void MI_FileOpen_Click(object sender, EventArgs e)
 		{
+			ctx.CurrentServer = TB_ServerAddress.Text;
+
 			string[] skipList = new string[] {
 				"jpg",
 				"jpeg",
