@@ -18,12 +18,15 @@ namespace ApacheLogParser
 		public DbSet<Ip> IpAddresses { get; set; }
 		public DbSet<FileData> Files { get; set; }
 
+		public string CurrentServer = "";
+
 		static ApacheLogContext()
 		{
 			Database.SetInitializer<ApacheLogContext>(new ApacheLogContextInitializer());
 		}
 
 		public ApacheLogContext() { }
+
 		public ApacheLogContext(string nameOrConnectionString) : base(nameOrConnectionString) { }
 
 		protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -41,14 +44,17 @@ namespace ApacheLogParser
 					new IndexAttribute("IX_UniqueIp") { IsUnique = true }));
 		}
 
-		public void ParseLog(string filename, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage writeLogCallback = null, SimpleCallback finishAction = null)
+		public void ParseLog(string filename, string[] skipList = null, int startIndex = 1, int count = -1,
+			SendMessage writeLogCallback = null,
+			SimpleCallback finishAction = null,
+			StringInStringOut getPageTitle = null)
 		{
 			FileInfo fi = new FileInfo(filename);
 			if (fi.Exists)
 			{
 				using (FileStream fs = fi.OpenRead())
 				{
-					ParseLog(fs, skipList, startIndex, count, writeLogCallback, finishAction);
+					ParseLog(fs, skipList, startIndex, count, writeLogCallback, finishAction, getPageTitle);
 				}
 			}
 			else
@@ -66,7 +72,11 @@ namespace ApacheLogParser
 		/// <param name="count">Максимальное количество записей, которое необходимо обработать</param>
 		/// <param name="writeLogCallback">Функция обратного вызова, которая будет записывать в лог произошедшие события</param>
 		/// <param name="finishAction">Функция обратного вызова, которая будет вызвана по завершении парсинга</param>
-		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1, SendMessage writeLogCallback = null, SimpleCallback finishAction = null)
+		/// <param name="getPageTitle">Функция обратного вызова для получения заголовка страницы</param>
+		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1,
+			SendMessage writeLogCallback = null,
+			SimpleCallback finishAction = null,
+			StringInStringOut getPageTitle = null)
 		{
 			if (skipList == null)
 			{
@@ -141,6 +151,11 @@ namespace ApacheLogParser
 							}
 							else
 							{
+								if (getPageTitle != null
+									&& (ale.File.FileType == "html" || ale.File.FileType == "htm"))
+								{
+									ale.File.PageTitle = getPageTitle(string.Join("/", CurrentServer, ale.File.FullName));
+								}
 								this.Files.Add(ale.File);
 							}
 
@@ -152,18 +167,18 @@ namespace ApacheLogParser
 						{
 							duplicateFound++;
 						}
-
-						if (i % 100 == 0)
-						{
-							DateTime end = DateTime.Now;
-							TimeSpan diff = end - start;
-							start = end;
-							writeLogCallback?.Invoke(String.Format("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4")));
-						}
 					}
 					else
 					{
 						skipped++;
+					}
+
+					if (i % 100 == 0)
+					{
+						DateTime end = DateTime.Now;
+						TimeSpan diff = end - start;
+						start = end;
+						writeLogCallback?.Invoke(String.Format("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4")));
 					}
 				}
 				else

@@ -23,6 +23,15 @@ namespace ApacheLogParserWF
 		bool timeToRefresh = false;
 		ApacheLogContext ctx;
 
+		public Form1()
+		{
+			InitializeComponent();
+			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
+			ctx = new ApacheLogContext();
+			DGV_DataBase.DataSource = GetSortedData();
+			ctx.CurrentServer = "http://www.tariscope.com";
+		}
+
 		public void WriteLog(string line)
 		{
 			TB_Log.Text = string.Join("\r\n", TB_Log.Text, line);
@@ -51,6 +60,7 @@ namespace ApacheLogParserWF
 							Ip = str.IpAddress,
 							Query = str.QueryType,
 							Response = str.QueryResult,
+							PageTitle = str.File.PageTitle,
 							FileType = str.File.FileType,
 							File = string.Concat(TB_ServerAddress.Text, str.File.FullName),
 							Size = str.DataSize,
@@ -121,14 +131,6 @@ namespace ApacheLogParserWF
 			return query.ToList();
 		}
 
-		public Form1()
-		{
-			InitializeComponent();
-			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
-			ctx = new ApacheLogContext();
-			DGV_DataBase.DataSource = GetSortedData();
-		}
-
 		private void MI_FileOpen_Click(object sender, EventArgs e)
 		{
 			string[] skipList = new string[] {
@@ -154,10 +156,10 @@ namespace ApacheLogParserWF
 					count = (int)NUD_Count.Value,
 					writeLogCallback = this.WriteLog,
 					finishAction = this.RefreshDbView,
+					getPageTitle= WebHelper.GetPageTitle,
 				};
 				Thread parseThread = new Thread(parser.Call);
 				parseThread.Start();
-				DGV_DataBase.DataSource = ctx.LogEntries.ToList();
 			}
 		}
 

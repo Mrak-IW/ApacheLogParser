@@ -12,10 +12,11 @@ namespace ApacheLogParser
 
 		public SendMessage writeLogCallback = null;
 		public SimpleCallback finishAction = null;
+		public StringInStringOut getPageTitle = null;
 
 		public void Call()
 		{
-			database.ParseLog(logFileName, skipList, startIndex, count, writeLogCallback, finishAction);
+			database.ParseLog(logFileName, skipList, startIndex, count, writeLogCallback, finishAction, getPageTitle);
 		}
 	}
 }

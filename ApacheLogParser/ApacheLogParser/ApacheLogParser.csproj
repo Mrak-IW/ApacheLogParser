@@ -53,11 +53,13 @@
     <Compile Include="ApacheLogContextInitializer.cs" />
     <Compile Include="ApacheLogEntry.cs" />
     <Compile Include="Delegates\SimpleCallback.cs" />
+    <Compile Include="Delegates\StringInStringOut.cs" />
     <Compile Include="FileData.cs" />
     <Compile Include="Ip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Delegates\SendMessage.cs" />
     <Compile Include="StreamParser.cs" />
+    <Compile Include="WebHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

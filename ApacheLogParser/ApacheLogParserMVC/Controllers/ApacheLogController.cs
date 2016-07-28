@@ -16,6 +16,11 @@ namespace ApacheLogParserMVC.Controllers
 	{
 		private ApacheLogContext db = new ApacheLogContext();
 
+		public ApacheLogController()
+		{
+			db.CurrentServer = "http://www.tariscope.com";
+		}
+
 		// GET: ApacheLog
 		public ActionResult Index()
 		{
@@ -50,7 +55,10 @@ namespace ApacheLogParserMVC.Controllers
 				//string path = AppDomain.CurrentDomain.BaseDirectory + "UploadedFiles/";
 				//string filename = Path.GetFileName(fileUpload.FileName);
 				//if (filename != null) fileUpload.SaveAs(Path.Combine(path, filename));
-				db.ParseLog(fileUpload.InputStream, skipList, 1, -1, (str) => log = String.Join("<br />\r\n", log, str));
+				db.ParseLog(fileUpload.InputStream, skipList, 1, -1,
+					writeLogCallback: (str) => log = String.Join("<br />\r\n", log, str),
+					getPageTitle: WebHelper.GetPageTitle
+					);
 			}
 
 			var logEntries = db.LogEntries.Include(a => a.File).Include(a => a.IpAddress);

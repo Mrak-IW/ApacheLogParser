@@ -33,6 +33,12 @@
 		<th>
 			@Html.DisplayNameFor(model => model.DataSize)
 		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.File.FileType)
+		</th>
+		<th>
+			@Html.DisplayNameFor(model => model.File.PageTitle)
+		</th>
         <th>
             @Html.DisplayNameFor(model => model.File.FullName)
         </th>
@@ -58,6 +64,12 @@
 		</td>
 		<td>
 			@Html.DisplayFor(modelItem => item.DataSize)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.File.FileType)
+		</td>
+		<td>
+			@Html.DisplayFor(modelItem => item.File.PageTitle)
 		</td>
         <td>
             @Html.DisplayFor(modelItem => item.File.FullName)
