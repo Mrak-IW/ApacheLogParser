@@ -1,4 +1,5 @@
 ﻿using ApacheLogParser.Delegates;
+using ApacheLogParser.Interfaces;
 
 namespace ApacheLogParser.UtilityClasses
 {
@@ -12,11 +13,16 @@ namespace ApacheLogParser.UtilityClasses
 
 		public SendMessage writeLogCallback = null;
 		public SimpleCallback finishAction = null;
-		public StringInStringOut getPageTitle = null;
+
+		public IWebPageInfo webPageInfoProvider = null;
+		public IWhoIsProvider whoIsProvider = null;
 
 		public void Call()
 		{
-			database.ParseLog(logFileName, skipList, startIndex, count, writeLogCallback, finishAction, getPageTitle);
+			database.WebPageInfoProvider = webPageInfoProvider;
+			database.WhoIsProvider = whoIsProvider;
+
+			database.ParseLog(logFileName, skipList, startIndex, count, writeLogCallback, finishAction);
 		}
 	}
 }

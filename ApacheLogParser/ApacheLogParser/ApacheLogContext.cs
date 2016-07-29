@@ -9,6 +9,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices.ComTypes;
 using System.IO;
 using ApacheLogParser.Delegates;
+using ApacheLogParser.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace ApacheLogParser
 {
@@ -18,7 +20,9 @@ namespace ApacheLogParser
 		public DbSet<Ip> IpAddresses { get; set; }
 		public DbSet<FileData> Files { get; set; }
 
-		public string CurrentServer = "";
+		public string CurrentServer { get; set; } = null;
+		public IWebPageInfo WebPageInfoProvider { get; set; } = null;
+		public IWhoIsProvider WhoIsProvider { get; set; } = null;
 
 		static ApacheLogContext()
 		{
@@ -46,15 +50,14 @@ namespace ApacheLogParser
 
 		public void ParseLog(string filename, string[] skipList = null, int startIndex = 1, int count = -1,
 			SendMessage writeLogCallback = null,
-			SimpleCallback finishAction = null,
-			StringInStringOut getPageTitle = null)
+			SimpleCallback finishAction = null)
 		{
 			FileInfo fi = new FileInfo(filename);
 			if (fi.Exists)
 			{
 				using (FileStream fs = fi.OpenRead())
 				{
-					ParseLog(fs, skipList, startIndex, count, writeLogCallback, finishAction, getPageTitle);
+					ParseLog(fs, skipList, startIndex, count, writeLogCallback, finishAction);
 				}
 			}
 			else
@@ -75,8 +78,7 @@ namespace ApacheLogParser
 		/// <param name="getPageTitle">Функция обратного вызова для получения заголовка страницы</param>
 		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1,
 			SendMessage writeLogCallback = null,
-			SimpleCallback finishAction = null,
-			StringInStringOut getPageTitle = null)
+			SimpleCallback finishAction = null)
 		{
 			if (skipList == null)
 			{
@@ -138,6 +140,23 @@ namespace ApacheLogParser
 							}
 							else
 							{
+								if (WhoIsProvider != null)
+								{
+									string whois = WhoIsProvider.WhoIs(ale.IpAddress.ToString());
+									Regex pattern = new Regex(@"netname:\s*(\S+)");
+									Match match = pattern.Match(whois);
+									if (match.Success)
+									{
+										GroupCollection groups = match.Groups;
+										whois = groups[1].Value;
+									}
+									else
+									{
+										whois = null;
+									}
+
+									ale.IpAddress.OwnerCompany = whois;
+								}
 								this.IpAddresses.Add(ale.IpAddress);
 							}
 
@@ -151,10 +170,11 @@ namespace ApacheLogParser
 							}
 							else
 							{
-								if (getPageTitle != null
+								if (WebPageInfoProvider != null
 									&& (ale.File.FileType == "html" || ale.File.FileType == "htm"))
 								{
-									ale.File.PageTitle = getPageTitle(string.Join("/", CurrentServer, ale.File.FullName));
+									WebPageInfoProvider.URI = string.Concat(CurrentServer, ale.File.FullName);
+									ale.File.PageTitle = WebPageInfoProvider.Title;
 								}
 								this.Files.Add(ale.File);
 							}

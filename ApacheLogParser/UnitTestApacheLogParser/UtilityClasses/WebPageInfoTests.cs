@@ -15,7 +15,6 @@ namespace ApacheLogParser.UtilityClasses.Tests
 		public void WebPageInfo_ConstructorTest()
 		{
 			WebPageInfo wp;
-			string title;
 			string[] testList = new string[] {
 				"http://bash.im",
 				"http://sinoptik.ua"
@@ -32,6 +31,15 @@ namespace ApacheLogParser.UtilityClasses.Tests
 					Assert.Fail(String.Format("Сбой получения информации. Адрес: {0}"));
 				}
 			}
+
+			//А теперь присвоим адрес вручную
+			wp = new WebPageInfo(testList[0]);
+			Console.WriteLine("{0} : [{2}] {1}", testList[0], wp.Title, wp.PageEncoding.WebName);
+
+			wp.URI = testList[1];
+			Console.WriteLine("{0} : [{2}] {1}", testList[1], wp.Title, wp.PageEncoding.WebName);
+
+
 		}
 	}
 }

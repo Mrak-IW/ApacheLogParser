@@ -14,8 +14,8 @@ namespace ApacheLogParser.UtilityClasses
 		public static int defaultBlockSize;
 
 		private Encoding enc;
+		private string uri;
 
-		public string URI { get; protected set; }
 		public string Title { get; protected set; }
 
 		static WebPageInfo()
@@ -24,20 +24,49 @@ namespace ApacheLogParser.UtilityClasses
 			defaultBlockSize = 1000;
 		}
 
+		public WebPageInfo()
+		{
+			URI = null;
+		}
+
 		public WebPageInfo(string pageURI)
 		{
 			URI = pageURI;
+		}
 
-			byte[] bytes = ReadBytes(0, defaultBlockSize);
+		public string URI
+		{
+			get
+			{
+				return uri;
+			}
+			set
+			{
+				uri = value;
+				this.Init();
+			}
+		}
 
-			PageEncoding = GetHtmlCharset(bytes);
-			Decoder dec = PageEncoding.GetDecoder();
+		private void Init()
+		{
+			if (URI != null)
+			{
+				byte[] bytes = ReadBytes(0, defaultBlockSize);
 
-			char[] chars = new char[bytes.Length];
-			int count = dec.GetChars(bytes, 0, bytes.Length, chars, 0);
-			string html = new string(chars);
+				PageEncoding = GetHtmlCharset(bytes);
+				Decoder dec = PageEncoding.GetDecoder();
 
-			Title = GetHtmlTitle(html);
+				char[] chars = new char[bytes.Length];
+				int count = dec.GetChars(bytes, 0, bytes.Length, chars, 0);
+				string html = new string(chars);
+
+				Title = GetHtmlTitle(html);
+			}
+			else
+			{
+				PageEncoding = null;
+				Title = null;
+			}
 		}
 
 		public Encoding PageEncoding
@@ -56,34 +85,37 @@ namespace ApacheLogParser.UtilityClasses
 		{
 			char[] result = null;
 
-			try
+			if (URI != null)
 			{
-				HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create(URI);
-				proxy_request.Method = "GET";
-				proxy_request.ContentType = "application/x-www-form-urlencoded";
-				proxy_request.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.89 Safari/532.5";
-				proxy_request.KeepAlive = true;
-				HttpWebResponse resp = proxy_request.GetResponse() as HttpWebResponse;
-				if (resp.StatusCode == HttpStatusCode.OK)
+				try
 				{
-					using (StreamReader sr = new StreamReader(resp.GetResponseStream(), PageEncoding))
+					HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create(URI);
+					proxy_request.Method = "GET";
+					proxy_request.ContentType = "application/x-www-form-urlencoded";
+					proxy_request.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.89 Safari/532.5";
+					proxy_request.KeepAlive = true;
+					HttpWebResponse resp = proxy_request.GetResponse() as HttpWebResponse;
+					if (resp.StatusCode == HttpStatusCode.OK)
 					{
-						char[] buf = new char[length];
-						int countRead = sr.ReadBlock(result, index, result.Length);
+						using (StreamReader sr = new StreamReader(resp.GetResponseStream(), PageEncoding))
+						{
+							char[] buf = new char[length];
+							int countRead = sr.ReadBlock(result, index, result.Length);
 
-						if (countRead == length)
-						{
-							result = buf;
-						}
-						else
-						{
-							result = new char[countRead];
-							buf.CopyTo(result, 0);
+							if (countRead == length)
+							{
+								result = buf;
+							}
+							else
+							{
+								result = new char[countRead];
+								buf.CopyTo(result, 0);
+							}
 						}
 					}
 				}
+				catch { }
 			}
-			catch { }
 
 			return result;
 		}
@@ -92,24 +124,27 @@ namespace ApacheLogParser.UtilityClasses
 		{
 			byte[] result = null;
 
-			try
+			if (URI != null)
 			{
-				HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create(URI);
-				proxy_request.Method = "GET";
-				proxy_request.ContentType = "application/x-www-form-urlencoded";
-				proxy_request.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.89 Safari/532.5";
-				proxy_request.KeepAlive = true;
-				HttpWebResponse resp = proxy_request.GetResponse() as HttpWebResponse;
-				if (resp.StatusCode == HttpStatusCode.OK)
+				try
 				{
-					using (BinaryReader br = new BinaryReader(resp.GetResponseStream()))
+					HttpWebRequest proxy_request = (HttpWebRequest)WebRequest.Create(URI);
+					proxy_request.Method = "GET";
+					proxy_request.ContentType = "application/x-www-form-urlencoded";
+					proxy_request.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.5 (KHTML, like Gecko) Chrome/4.0.249.89 Safari/532.5";
+					proxy_request.KeepAlive = true;
+					HttpWebResponse resp = proxy_request.GetResponse() as HttpWebResponse;
+					if (resp.StatusCode == HttpStatusCode.OK)
 					{
-						byte[] bytes = br.ReadBytes(length);
-						result = bytes;
+						using (BinaryReader br = new BinaryReader(resp.GetResponseStream()))
+						{
+							byte[] bytes = br.ReadBytes(length);
+							result = bytes;
+						}
 					}
 				}
+				catch { }
 			}
-			catch { }
 
 			return result;
 		}

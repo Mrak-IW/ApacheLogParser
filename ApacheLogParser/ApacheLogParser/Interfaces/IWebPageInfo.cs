@@ -9,7 +9,7 @@ namespace ApacheLogParser.Interfaces
 	public interface IWebPageInfo
 	{
 		string Title { get; }
-		string URI { get; }
+		string URI { get; set; }
 		Encoding PageEncoding { get; }
 	}
 }

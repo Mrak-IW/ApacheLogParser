@@ -17,6 +17,8 @@ namespace ApacheLogParserMVC.Controllers
 		public ApacheLogController()
 		{
 			db.CurrentServer = "http://www.tariscope.com";
+			db.WebPageInfoProvider = new WebPageInfo();
+			db.WhoIsProvider = new WhoIsServer("whois.ripe.net");
 		}
 
 		// GET: ApacheLog
@@ -54,8 +56,7 @@ namespace ApacheLogParserMVC.Controllers
 				//string filename = Path.GetFileName(fileUpload.FileName);
 				//if (filename != null) fileUpload.SaveAs(Path.Combine(path, filename));
 				db.ParseLog(fileUpload.InputStream, skipList, 1, -1,
-					writeLogCallback: (str) => log = String.Join("<br />\r\n", log, str),
-					getPageTitle: WebHelper.GetPageTitle
+					writeLogCallback: (str) => log = String.Join("<br />\r\n", log, str)
 					);
 			}
 

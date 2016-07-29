@@ -164,7 +164,8 @@ namespace ApacheLogParserWF
 					count = (int)NUD_Count.Value,
 					writeLogCallback = this.WriteLog,
 					finishAction = this.RefreshDbView,
-					getPageTitle = getTitle,
+					webPageInfoProvider = new WebPageInfo(),
+					whoIsProvider = new WhoIsServer("whois.ripe.net"),
 				};
 				Thread parseThread = new Thread(parser.Call);
 				parseThread.Start();
