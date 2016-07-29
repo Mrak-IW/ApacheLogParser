@@ -55,13 +55,14 @@
     <Compile Include="Delegates\SimpleCallback.cs" />
     <Compile Include="Delegates\StringInStringOut.cs" />
     <Compile Include="FileData.cs" />
-    <Compile Include="Interfaces\IWebPageGetter.cs" />
+    <Compile Include="Interfaces\IWebPageInfo.cs" />
     <Compile Include="Interfaces\IWhoIsServer.cs" />
     <Compile Include="Ip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Delegates\SendMessage.cs" />
     <Compile Include="UtilityClasses\StreamParser.cs" />
     <Compile Include="UtilityClasses\WebHelper.cs" />
+    <Compile Include="UtilityClasses\WebPageInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -64,6 +64,7 @@
     <Compile Include="UnitTestWebHelper.cs" />
     <Compile Include="UnitTestApacheLogEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UtilityClasses\WebPageInfoTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

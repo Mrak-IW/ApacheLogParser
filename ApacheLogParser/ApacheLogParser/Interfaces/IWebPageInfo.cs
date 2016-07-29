@@ -8,6 +8,8 @@ namespace ApacheLogParser.Interfaces
 {
 	interface IWebPageInfo
 	{
-		string GetTitle();
+		string Title { get; }
+		string URI { get; }
+		Encoding PageEncoding { get; }
 	}
 }

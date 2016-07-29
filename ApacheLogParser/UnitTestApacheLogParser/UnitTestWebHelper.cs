@@ -10,7 +10,7 @@ namespace ApacheLogParser.Tests
 	public class UnitTestWebHelper
 	{
 		[TestMethod]
-		public void GetPageTitleTest()
+		public void WebHelper_GetPageTitleTest()
 		{
 			string pageURI = "http://bash.im";
 			//"http://www.tariscope.com";
@@ -19,7 +19,7 @@ namespace ApacheLogParser.Tests
 		}
 
 		[TestMethod]
-		public void WhoisTest()
+		public void WebHelper_WhoisTest()
 		{
 			//who.is
 			//whois.arin.net
