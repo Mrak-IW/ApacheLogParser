@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using ApacheLogParser;
+using ApacheLogParser.UtilityClasses;
 
 namespace ApacheLogParser.Tests
 {

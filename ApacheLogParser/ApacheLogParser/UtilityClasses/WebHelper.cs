@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Net.Sockets;
 
-namespace ApacheLogParser
+namespace ApacheLogParser.UtilityClasses
 {
 	public static class WebHelper
 	{
