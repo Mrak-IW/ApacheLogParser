@@ -61,6 +61,7 @@ namespace ApacheLogParserWF
 						{
 							Date = str.Date,
 							Ip = str.IpAddress,
+							IpOwner = str.IpAddress.OwnerCompany,
 							Query = str.QueryType,
 							Response = str.QueryResult,
 							PageTitle = str.File.PageTitle,

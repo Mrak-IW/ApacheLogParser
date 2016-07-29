@@ -192,10 +192,10 @@ namespace ApacheLogParser
 						skipped++;
 					}
 
-					if (i % 100 == 0)
+					DateTime end = DateTime.Now;
+					TimeSpan diff = end - start;
+					if (diff.TotalSeconds > 2 || i % 100 == 0)
 					{
-						DateTime end = DateTime.Now;
-						TimeSpan diff = end - start;
 						start = end;
 						writeLogCallback?.Invoke(String.Format("Обработано {0} строк [+{1} s]", i, diff.TotalSeconds.ToString("F4")));
 					}
