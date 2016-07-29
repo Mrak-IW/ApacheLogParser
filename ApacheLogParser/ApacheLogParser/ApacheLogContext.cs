@@ -75,7 +75,6 @@ namespace ApacheLogParser
 		/// <param name="count">Максимальное количество записей, которое необходимо обработать</param>
 		/// <param name="writeLogCallback">Функция обратного вызова, которая будет записывать в лог произошедшие события</param>
 		/// <param name="finishAction">Функция обратного вызова, которая будет вызвана по завершении парсинга</param>
-		/// <param name="getPageTitle">Функция обратного вызова для получения заголовка страницы</param>
 		public void ParseLog(Stream inputStream, string[] skipList = null, int startIndex = 1, int count = -1,
 			SendMessage writeLogCallback = null,
 			SimpleCallback finishAction = null)

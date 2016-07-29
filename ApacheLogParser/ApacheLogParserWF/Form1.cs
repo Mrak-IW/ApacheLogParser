@@ -22,8 +22,11 @@ namespace ApacheLogParserWF
 		public Form1()
 		{
 			InitializeComponent();
-			AppDomain.CurrentDomain.SetData("DataDirectory", AppDomain.CurrentDomain.BaseDirectory);
-			DirectoryInfo datadir = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory + "/AppData");
+
+			string dbPath = AppDomain.CurrentDomain.BaseDirectory + "AppData\\";
+
+			AppDomain.CurrentDomain.SetData("DataDirectory", dbPath);
+			DirectoryInfo datadir = new DirectoryInfo(dbPath);
 			if (!datadir.Exists)
 			{
 				datadir.Create();
