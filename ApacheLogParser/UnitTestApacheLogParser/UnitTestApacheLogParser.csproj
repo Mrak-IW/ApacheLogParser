@@ -61,10 +61,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTestWebHelper.cs" />
+    <Compile Include="UtilityClasses\WebHelperTests.cs" />
     <Compile Include="UnitTestApacheLogEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UtilityClasses\WebPageInfoTests.cs" />
+    <Compile Include="UtilityClasses\WhoIsServerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

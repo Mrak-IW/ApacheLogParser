@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApacheLogParser.Interfaces
 {
-	interface IWhoIsServer
+	public interface IWhoIsProvider
 	{
 		string WhoIs(string address);
 	}

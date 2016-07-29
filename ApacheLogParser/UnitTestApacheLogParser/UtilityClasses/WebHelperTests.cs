@@ -4,10 +4,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ApacheLogParser;
 using ApacheLogParser.UtilityClasses;
 
-namespace ApacheLogParser.Tests
+namespace ApacheLogParser.UtilityClasses.Tests
 {
 	[TestClass]
-	public class UnitTestWebHelper
+	public class WebHelperTests
 	{
 		[TestMethod]
 		public void WebHelper_GetPageTitleTest()

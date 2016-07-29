@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApacheLogParser.Interfaces
 {
-	interface IWebPageInfo
+	public interface IWebPageInfo
 	{
 		string Title { get; }
 		string URI { get; }
